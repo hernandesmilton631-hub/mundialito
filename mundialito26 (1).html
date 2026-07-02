@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundialito 26 — Copa Mundial FIFA 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0A1930;
+    --night-2:#0E2242;
+    --card:#112A52;
+    --card-2:#0F2547;
+    --pitch:#146C3A;
+    --pitch-2:#0E4F2A;
+    --gold:#FFC94D;
+    --red:#E4483C;
+    --cream:#F4EFE3;
+    --cream-dim:#C9C3B4;
+    --line:rgba(244,239,227,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(255,201,77,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 90% 0%, rgba(20,108,58,0.35), transparent 55%),
+      var(--night);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:var(--gold);}
+
+  /* ===== HERO / SCOREBOARD ===== */
+  .hero{
+    padding:44px 24px 28px;
+    max-width:1120px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    align-items:flex-end;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+  }
+  .scoreboard-frame{max-width:640px;}
+  .eyebrow{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    letter-spacing:0.22em;
+    font-size:12.5px;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+  .score-title{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:clamp(48px,9vw,96px);
+    line-height:0.92;
+    margin:8px 0 6px;
+    letter-spacing:0.01em;
+    text-shadow:0 0 34px rgba(255,201,77,0.18);
+  }
+  .score-title .accent{
+    color:var(--night);
+    background:var(--gold);
+    padding:0 14px;
+    margin-left:6px;
+    display:inline-block;
+    transform:skewX(-6deg);
+    border-radius:4px;
+  }
+  .subtitle{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-size:17px;
+    color:var(--cream-dim);
+    margin:0;
+    letter-spacing:0.02em;
+  }
+
+  .vote-board{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 20px;
+    min-width:250px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    position:relative;
+  }
+  .vote-board::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:10px;
+    padding:1px;
+    background:linear-gradient(135deg, rgba(255,201,77,0.35), transparent 40%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+  }
+  .vote-label{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:0.16em;
+    color:var(--cream-dim);
+    margin:0 0 10px;
+  }
+  .vote-buttons{display:flex;gap:10px;}
+  .vote-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    background:var(--card-2);
+    border:1px solid var(--line);
+    color:var(--cream);
+    border-radius:8px;
+    padding:10px 8px;
+    cursor:pointer;
+    font-family:'Barlow Semi Condensed',sans-serif;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .vote-btn:hover{transform:translateY(-2px);border-color:rgba(244,239,227,0.3);}
+  .vote-btn:active{transform:translateY(0);}
+  .vote-btn.voted{border-color:var(--gold);}
+  .vote-icon{font-size:18px;}
+  .vote-count{
+    font-family:'Anton',sans-serif;
+    font-size:20px;
+    min-width:22px;
+    text-align:center;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+  }
+  .vote-btn:disabled{cursor:default;opacity:0.85;}
+
+  /* ===== NAV TABS (ticket stubs) ===== */
+  .tabs{
+    max-width:1120px;
+    margin:26px auto 0;
+    padding:0 24px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .tab{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.03em;
+    color:var(--cream-dim);
+    background:var(--card-2);
+    border:1px solid var(--line);
+    border-bottom:none;
+    padding:12px 20px;
+    border-radius:10px 10px 0 0;
+    cursor:pointer;
+    position:relative;
+  }
+  .tab:hover{color:var(--cream);}
+  .tab.active{
+    color:var(--night);
+    background:var(--gold);
+    border-color:var(--gold);
+  }
+
+  main{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 24px 60px;
+  }
+  .panel{
+    display:none;
+    background:linear-gradient(180deg, var(--card), var(--card-2));
+    border:1px solid var(--line);
+    border-radius:0 12px 12px 12px;
+    padding:28px 26px 34px;
+    animation:fadein .35s ease;
+  }
+  .panel.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:12px;
+    border-bottom:2px solid var(--pitch);
+    padding-bottom:14px;
+    margin-bottom:6px;
+  }
+  .panel-head h2{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:800;
+    font-size:26px;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .refresh-btn{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    background:var(--pitch);
+    color:var(--cream);
+    border:1px solid rgba(244,239,227,0.2);
+    border-radius:7px;
+    padding:9px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .refresh-btn:hover{background:var(--pitch-2);transform:translateY(-1px);}
+  .refresh-btn .spin{display:inline-block;}
+  .refresh-btn.spinning .spin{animation:spin .6s linear;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .updated-note{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-size:12.5px;
+    color:var(--cream-dim);
+    margin:10px 0 22px;
+  }
+
+  /* ===== CARDS ===== */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:16px;
+  }
+  .curio-card{
+    background:var(--night-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .curio-card .num{
+    font-family:'Anton',sans-serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    display:block;
+    margin-bottom:8px;
+  }
+  .curio-card h3{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-size:16.5px;
+    margin:0 0 6px;
+    font-weight:700;
+  }
+  .curio-card p{font-size:13.5px;color:var(--cream-dim);margin:0;line-height:1.5;}
+
+  /* ===== MATCH TICKETS ===== */
+  .match-group-title{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:26px 0 12px;
+  }
+  .match-group-title:first-of-type{margin-top:8px;}
+  .match-list{display:flex;flex-direction:column;gap:10px;}
+  .ticket{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--night-2);
+    border:1px dashed rgba(244,239,227,0.28);
+    border-radius:8px;
+    padding:12px 16px;
+    position:relative;
+  }
+  .ticket::before,.ticket::after{
+    content:"";
+    position:absolute;
+    width:16px;height:16px;
+    background:var(--card);
+    border-radius:50%;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .ticket::before{left:-8px;}
+  .ticket::after{right:-8px;}
+  .t-status{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.06em;
+    padding:3px 8px;
+    border-radius:4px;
+    white-space:nowrap;
+  }
+  .t-status.done{background:var(--pitch);color:var(--cream);}
+  .t-status.live{background:var(--red);color:var(--cream);}
+  .t-teams{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    min-width:0;
+  }
+  .t-teams .team{flex:1;text-align:right;}
+  .t-teams .team.away{text-align:left;}
+  .t-score{
+    font-family:'Anton',sans-serif;
+    font-size:20px;
+    color:var(--gold);
+    background:var(--night);
+    border-radius:6px;
+    padding:2px 12px;
+    min-width:64px;
+    text-align:center;
+  }
+  .t-meta{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-size:12px;
+    color:var(--cream-dim);
+    text-align:right;
+    min-width:130px;
+  }
+
+  /* ===== VENUES ===== */
+  .venue-card{
+    background:var(--night-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+  }
+  .venue-card .flag{font-size:22px;}
+  .venue-card h3{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    font-size:17px;
+    margin:8px 0 2px;
+  }
+  .venue-card .city{
+    font-size:12.5px;
+    color:var(--gold);
+    font-family:'Barlow Semi Condensed',sans-serif;
+    letter-spacing:0.04em;
+    margin-bottom:8px;
+  }
+  .venue-card .cap{
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    color:var(--cream);
+  }
+  .venue-card .cap-label{font-size:11px;color:var(--cream-dim);margin-bottom:8px;}
+  .venue-card p{font-size:13px;color:var(--cream-dim);line-height:1.5;margin:0;}
+
+  /* ===== STATS ===== */
+  .stat-hero-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:14px;
+    margin-bottom:26px;
+  }
+  .stat-box{
+    background:var(--pitch);
+    border-radius:10px;
+    padding:18px;
+    text-align:center;
+  }
+  .stat-box .val{
+    font-family:'Anton',sans-serif;
+    font-size:38px;
+    line-height:1;
+  }
+  .stat-box .lbl{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-size:12.5px;
+    color:rgba(244,239,227,0.85);
+    margin-top:6px;
+  }
+  table.stat-table{
+    width:100%;
+    border-collapse:collapse;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+  }
+  table.stat-table th,table.stat-table td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  table.stat-table th{
+    font-family:'Barlow Semi Condensed',sans-serif;
+    color:var(--gold);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  footer{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 24px 50px;
+    font-size:12px;
+    color:var(--cream-dim);
+    line-height:1.6;
+  }
+  footer a{color:var(--gold);text-decoration:none;}
+
+  .toast{
+    position:fixed;
+    bottom:26px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--gold);
+    color:var(--night);
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700;
+    padding:11px 22px;
+    border-radius:8px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:640px){
+    .t-teams{font-size:13px;}
+    .t-meta{display:none;}
+    .hero{align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="scoreboard-frame">
+    <span class="eyebrow">Copa Mundial de la FIFA 2026™</span>
+    <h1 class="score-title">MUNDIALITO<span class="accent">26</span></h1>
+    <p class="subtitle">Canadá · México · Estados Unidos — 11 de junio al 19 de julio de 2026</p>
+  </div>
+  <div class="vote-board">
+    <p class="vote-label">¿TE GUSTA ESTE PORTAL?</p>
+    <div class="vote-buttons">
+      <button id="likeBtn" class="vote-btn like">
+        <span class="vote-icon">👍</span><span class="vote-count" id="likeCount">0</span>
+      </button>
+      <button id="dislikeBtn" class="vote-btn dislike">
+        <span class="vote-icon">👎</span><span class="vote-count" id="dislikeCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="info">🌎 Información</button>
+  <button class="tab" data-tab="partidos">⚽ Partidos</button>
+  <button class="tab" data-tab="sedes">🏟️ Sedes</button>
+  <button class="tab" data-tab="stats">📊 Estadísticas</button>
+</nav>
+
+<main>
+
+  <!-- ===================== INFO ===================== -->
+  <section id="info" class="panel active">
+    <div class="panel-head">
+      <h2>Información del Mundial &amp; datos curiosos</h2>
+      <button class="refresh-btn" data-target="info"><span class="spin">🔄</span> Actualizar datos</button>
+    </div>
+    <p class="updated-note" data-updated="info">Última actualización: —</p>
+    <div class="card-grid" id="info-grid"></div>
+  </section>
+
+  <!-- ===================== PARTIDOS ===================== -->
+  <section id="partidos" class="panel">
+    <div class="panel-head">
+      <h2>Partidos</h2>
+      <button class="refresh-btn" data-target="partidos"><span class="spin">🔄</span> Actualizar datos</button>
+    </div>
+    <p class="updated-note" data-updated="partidos">Última actualización: —</p>
+    <div id="partidos-content"></div>
+  </section>
+
+  <!-- ===================== SEDES ===================== -->
+  <section id="sedes" class="panel">
+    <div class="panel-head">
+      <h2>Sedes del Mundial</h2>
+      <button class="refresh-btn" data-target="sedes"><span class="spin">🔄</span> Actualizar datos</button>
+    </div>
+    <p class="updated-note" data-updated="sedes">Última actualización: —</p>
+    <div class="card-grid" id="sedes-grid"></div>
+  </section>
+
+  <!-- ===================== STATS ===================== -->
+  <section id="stats" class="panel">
+    <div class="panel-head">
+      <h2>Estadísticas</h2>
+      <button class="refresh-btn" data-target="stats"><span class="spin">🔄</span> Actualizar datos</button>
+    </div>
+    <p class="updated-note" data-updated="stats">Última actualización: —</p>
+    <div id="stats-content"></div>
+  </section>
+
+</main>
+
+<footer>
+  Datos recopilados como fotografía informativa al <strong>2 de julio de 2026</strong> a partir de fuentes públicas (FIFA, UEFA, Wikipedia y medios deportivos). El botón "Actualizar datos" refresca cada sección desde el snapshot cargado en este portal. Para resultados en vivo, minuto a minuto, visita <a href="https://www.fifa.com/es/tournaments/mens/worldcup/canadamexicousa2026" target="_blank" rel="noopener">FIFA.com</a>.
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DATOS — snapshot al 2 de julio de 2026
+   ============================================================ */
+const CURIOSIDADES = [
+  {num:"48", title:"Selecciones participantes", text:"Primera edición con 48 equipos, repartidos en 12 grupos de 4 selecciones cada uno."},
+  {num:"104", title:"Partidos totales", text:"El torneo más grande de la historia disputará 104 partidos, muy por encima de los 64 de ediciones anteriores."},
+  {num:"3", title:"Países anfitriones", text:"Primer Mundial organizado conjuntamente por tres países: Canadá, México y Estados Unidos."},
+  {num:"3°", title:"Mundial en el Azteca", text:"El Estadio de Ciudad de México (Azteca) se convierte en el primer estadio del mundo en albergar tres finales de Copas del Mundo: 1970, 1986 y 2026."},
+  {num:"32", title:"Clasificados a dieciseisavos", text:"Los dos primeros de cada grupo más los 8 mejores terceros lugares avanzan a una nueva ronda de dieciseisavos de final, inédita en este formato de 48 equipos."},
+  {num:"52", title:"Árbitros convocados", text:"La FIFA anunció el 1 de junio de 2026 una lista de 52 árbitros provenientes de las 6 confederaciones continentales."},
+  {num:"1ᵉʳ", title:"Show de medio tiempo en la final", text:"El presidente de la FIFA confirmó que, por primera vez en la historia, la final tendrá un espectáculo de entretiempo al estilo Super Bowl."},
+  {num:"11 jun", title:"Partido inaugural", text:"El torneo arrancó el 11 de junio de 2026 con México venciendo 2-0 a Sudáfrica en Ciudad de México."},
+  {num:"19 jul", title:"Fecha de la gran final", text:"La final se disputará el 19 de julio de 2026 en el MetLife Stadium, en el área metropolitana de Nueva York-Nueva Jersey."},
+];
+
+const PARTIDOS_GRUPOS = [
+  {home:"México", hs:2, as:0, away:"Sudáfrica", venue:"Ciudad de México", date:"11 jun"},
+  {home:"Corea del Sur", hs:2, as:1, away:"Chile", venue:"—", date:"11 jun"},
+  {home:"Canadá", hs:1, as:1, away:"Bosnia y Herzegovina", venue:"—", date:"12 jun"},
+  {home:"Estados Unidos", hs:4, as:1, away:"Paraguay", venue:"—", date:"12 jun"},
+  {home:"Chequia", hs:1, as:1, away:"Sudáfrica", venue:"Atlanta", date:"jun"},
+  {home:"Suiza", hs:4, as:1, away:"Bosnia y Herzegovina", venue:"Los Ángeles", date:"18 jun"},
+  {home:"Canadá", hs:6, as:0, away:"Catar", venue:"BC Place, Vancouver", date:"24 jun"},
+  {home:"México", hs:1, as:0, away:"Corea del Sur", venue:"Guadalajara", date:"jun"},
+  {home:"Estados Unidos", hs:2, as:0, away:"Australia", venue:"Seattle", date:"jun"},
+  {home:"Escocia", hs:0, as:1, away:"Marruecos", venue:"Boston", date:"jun"},
+  {home:"Brasil", hs:3, as:0, away:"Haití", venue:"Filadelfia", date:"jun"},
+  {home:"Turquía", hs:0, as:1, away:"Paraguay", venue:"Bahía de San Francisco", date:"jun"},
+  {home:"Portugal", hs:0, as:0, away:"RD Congo", venue:"Houston", date:"jun"},
+  {home:"Inglaterra", hs:4, as:2, away:"Croacia", venue:"Dallas", date:"17 jun"},
+  {home:"Ghana", hs:1, as:0, away:"Panamá", venue:"Toronto", date:"27 jun"},
+  {home:"Uzbekistán", hs:1, as:3, away:"Colombia", venue:"Ciudad de México", date:"jun"},
+];
+
+const PARTIDOS_16AVOS = [
+  {home:"Portugal", away:"Croacia", venue:"Toronto", date:"3 jul · 01:00 (hora CDMX)"},
+  {home:"España", away:"Austria", venue:"Estadio Los Ángeles", date:"2 jul · 13:00 (hora CDMX)"},
+  {home:"Suiza / Catar", away:"Argelia", venue:"BC Place, Vancouver", date:"3 jul · 05:00 (hora CDMX)"},
+  {home:"Colombia", away:"Croacia*", venue:"Toronto", date:"3 jul · 01:00"},
+  {home:"Bélgica", away:"Ganador vs. Estados Unidos", venue:"Lumen Field, Seattle", date:"6 jul (octavos)"},
+];
+
+const SEDES = [
+  {flag:"🇲🇽", name:"Estadio Ciudad de México (Azteca)", city:"Ciudad de México, México", cap:"~90,000", note:"Ha sido testigo de las coronaciones de Pelé y Maradona; único estadio que repite sede mundialista."},
+  {flag:"🇲🇽", name:"Estadio Guadalajara (Akron)", city:"Guadalajara, México", cap:"~48,000", note:"Sede de la Fase de Grupos, con ambiente tapatío garantizado."},
+  {flag:"🇲🇽", name:"Estadio Monterrey (BBVA)", city:"Monterrey (Guadalupe), México", cap:"~53,500", note:"Conocido como el 'Gigante de Acero', con vista a las montañas de Nuevo León."},
+  {flag:"🇺🇸", name:"MetLife Stadium", city:"Nueva York / Nueva Jersey, EE. UU.", cap:"~82,500", note:"Sede de la gran final del 19 de julio de 2026."},
+  {flag:"🇺🇸", name:"SoFi Stadium", city:"Los Ángeles, EE. UU.", cap:"~70,000", note:"Estadio de última generación con pantalla circular 360° y techo transparente."},
+  {flag:"🇺🇸", name:"AT&T Stadium", city:"Dallas (Arlington), EE. UU.", cap:"~94,000", note:"Apodado 'La Estrella de la Muerte'; el estadio más grande de la NFL."},
+  {flag:"🇺🇸", name:"Mercedes-Benz Stadium", city:"Atlanta, EE. UU.", cap:"~75,000", note:"Techo retráctil de diseño único y enfoque sustentable."},
+  {flag:"🇺🇸", name:"Arrowhead Stadium", city:"Kansas City, EE. UU.", cap:"~76,000", note:"Famoso por romper récords de ruido con su afición."},
+  {flag:"🇺🇸", name:"Hard Rock Stadium", city:"Miami, EE. UU.", cap:"~65,000", note:"Sede también de la F1 y el Miami Open de tenis."},
+  {flag:"🇺🇸", name:"NRG Stadium", city:"Houston, EE. UU.", cap:"~72,000", note:"Uno de los recintos techados del torneo."},
+  {flag:"🇺🇸", name:"Lincoln Financial Field", city:"Filadelfia, EE. UU.", cap:"~69,000", note:"Casa de los Philadelphia Eagles de la NFL."},
+  {flag:"🇺🇸", name:"Gillette Stadium", city:"Boston (Foxborough), EE. UU.", cap:"~65,000", note:"Ya albergó partidos del Mundial Femenil de 2003."},
+  {flag:"🇺🇸", name:"Levi's Stadium (Bahía de San Francisco)", city:"Santa Clara, EE. UU.", cap:"68,827", note:"Inaugurado en 2014; uno de los recintos más modernos del torneo."},
+  {flag:"🇺🇸", name:"Lumen Field", city:"Seattle, EE. UU.", cap:"~69,000", note:"Ambiente ruidoso característico de la costa noroeste."},
+  {flag:"🇨🇦", name:"BC Place", city:"Vancouver, Canadá", cap:"~54,000", note:"Sede de los Juegos Olímpicos de Invierno 2010; techo retráctil."},
+  {flag:"🇨🇦", name:"BMO Field", city:"Toronto, Canadá", cap:"~45,000", note:"Aquí Canadá selló su regreso al Mundial tras 36 años de ausencia."},
+];
+
+const STAT_BOXES = [
+  {val:"48", lbl:"Selecciones"},
+  {val:"12", lbl:"Grupos"},
+  {val:"104", lbl:"Partidos"},
+  {val:"16", lbl:"Sedes"},
+  {val:"3", lbl:"Países anfitriones"},
+  {val:"39", lbl:"Días de torneo"},
+];
+
+const STAT_TABLE = [
+  {label:"Máximo goleador histórico en Mundiales", val:"Miroslav Klose (Alemania) — 16 goles"},
+  {label:"Selección con más títulos", val:"Brasil — 5 títulos"},
+  {label:"Formato de esta edición", val:"Fase de grupos → 16avos → 8vos → 4tos → Semis → Final"},
+  {label:"Fecha de inicio", val:"11 de junio de 2026"},
+  {label:"Fecha de la final", val:"19 de julio de 2026 · MetLife Stadium"},
+  {label:"Estadios con alerta por calor extremo", val:"10 de 16 sedes, según reportes de seguridad"},
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderInfo(){
+  const grid = document.getElementById('info-grid');
+  grid.innerHTML = CURIOSIDADES.map(c => `
+    <div class="curio-card">
+      <span class="num">${c.num}</span>
+      <h3>${c.title}</h3>
+      <p>${c.text}</p>
+    </div>`).join('');
+}
+
+function ticketRow(m, status){
+  return `
+    <div class="ticket">
+      <span class="t-status ${status==='live'?'live':'done'}">${status==='live'?'POR JUGARSE':'FINAL'}</span>
+      <div class="t-teams">
+        <span class="team home">${m.home}</span>
+        <span class="t-score">${m.hs!==undefined ? m.hs+' - '+m.as : 'VS'}</span>
+        <span class="team away">${m.away}</span>
+      </div>
+      <span class="t-meta">${m.venue}<br>${m.date}</span>
+    </div>`;
+}
+
+function renderPartidos(){
+  const el = document.getElementById('partidos-content');
+  el.innerHTML = `
+    <p class="match-group-title">Resultados — Fase de grupos</p>
+    <div class="match-list">${PARTIDOS_GRUPOS.map(m=>ticketRow(m,'done')).join('')}</div>
+    <p class="match-group-title">Dieciseisavos de final — en curso (2–6 jul)</p>
+    <div class="match-list">${PARTIDOS_16AVOS.map(m=>ticketRow(m,'live')).join('')}</div>
+  `;
+}
+
+function renderSedes(){
+  const grid = document.getElementById('sedes-grid');
+  grid.innerHTML = SEDES.map(s => `
+    <div class="venue-card">
+      <span class="flag">${s.flag}</span>
+      <h3>${s.name}</h3>
+      <div class="city">${s.city}</div>
+      <div class="cap">${s.cap}</div>
+      <div class="cap-label">Capacidad aprox.</div>
+      <p>${s.note}</p>
+    </div>`).join('');
+}
+
+function renderStats(){
+  const el = document.getElementById('stats-content');
+  el.innerHTML = `
+    <div class="stat-hero-grid">
+      ${STAT_BOXES.map(s=>`<div class="stat-box"><div class="val">${s.val}</div><div class="lbl">${s.lbl}</div></div>`).join('')}
+    </div>
+    <table class="stat-table">
+      <thead><tr><th>Dato</th><th>Detalle</th></tr></thead>
+      <tbody>
+        ${STAT_TABLE.map(r=>`<tr><td>${r.label}</td><td>${r.val}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+renderInfo();
+renderPartidos();
+renderSedes();
+renderStats();
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============================================================
+   REFRESH BUTTONS
+   ============================================================ */
+const RENDERERS = {info:renderInfo, partidos:renderPartidos, sedes:renderSedes, stats:renderStats};
+
+function stamp(){
+  const d = new Date();
+  return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
+         d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+document.querySelectorAll('.refresh-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const target = btn.dataset.target;
+    btn.classList.add('spinning');
+    btn.disabled = true;
+    setTimeout(()=>{
+      RENDERERS[target]();
+      document.querySelector(`[data-updated="${target}"]`).textContent = 'Última actualización: ' + stamp();
+      btn.classList.remove('spinning');
+      btn.disabled = false;
+      showToast('Datos actualizados ✔');
+    }, 500);
+  });
+});
+
+// set initial timestamps
+document.querySelectorAll('.updated-note').forEach(n=>{
+  n.textContent = 'Última actualización: ' + stamp();
+});
+
+/* ============================================================
+   LIKE / DISLIKE  (persist in localStorage)
+   ============================================================ */
+const likeBtn = document.getElementById('likeBtn');
+const dislikeBtn = document.getElementById('dislikeBtn');
+const likeCountEl = document.getElementById('likeCount');
+const dislikeCountEl = document.getElementById('dislikeCount');
+
+function loadVotes(){
+  let likes = parseInt(localStorage.getItem('mundialito26_likes') || '0', 10);
+  let dislikes = parseInt(localStorage.getItem('mundialito26_dislikes') || '0', 10);
+  let voted = localStorage.getItem('mundialito26_voted') || '';
+  likeCountEl.textContent = likes;
+  dislikeCountEl.textContent = dislikes;
+  if(voted === 'like'){ likeBtn.classList.add('voted'); likeBtn.disabled = true; dislikeBtn.disabled = true; }
+  if(voted === 'dislike'){ dislikeBtn.classList.add('voted'); likeBtn.disabled = true; dislikeBtn.disabled = true; }
+}
+
+function vote(type){
+  const voted = localStorage.getItem('mundialito26_voted') || '';
+  if(voted) return; // ya votó una vez
+  const key = type === 'like' ? 'mundialito26_likes' : 'mundialito26_dislikes';
+  const current = parseInt(localStorage.getItem(key) || '0', 10);
+  localStorage.setItem(key, String(current + 1));
+  localStorage.setItem('mundialito26_voted', type);
+  loadVotes();
+  showToast(type === 'like' ? '¡Gracias por tu like! 👍' : 'Gracias por tu opinión 👎');
+}
+
+likeBtn.addEventListener('click', ()=>vote('like'));
+dislikeBtn.addEventListener('click', ()=>vote('dislike'));
+loadVotes();
+</script>
+</body>
+</html>
